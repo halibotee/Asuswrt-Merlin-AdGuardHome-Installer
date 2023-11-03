@@ -138,7 +138,7 @@ AdGuardHome_authen () {
     fi
     PTXT "$INFO Please wait while we perform one last check."
     ( if [ -n "$(pidof AdGuardHome)" ]; then { if { service restart_AdGuardHome >/dev/null 2>&1; }; then sleep 1; elif { /opt/etc/init.d/S99AdGuardHome restart; }; then sleep 1; else PTXT "$ERROR Couldn't start AdGuardHome!" "$ERROR Please send WebUI System Log to dev."; end_op_message 1; return; fi; }; fi; sleep 1; )& local PID="$!"; wait $PID 2>/dev/null;
-    ( { until { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
+    ( { until { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
     PTXT "$INFO AdGuardHome setup is complete."
     end_op_message 0
   else
@@ -208,7 +208,7 @@ backup_restore () {
     fi
     PTXT "$INFO Please wait while we perform one last check."
     ( if [ -n "$(pidof AdGuardHome)" ]; then { if { service restart_AdGuardHome >/dev/null 2>&1; }; then sleep 1; elif { /opt/etc/init.d/S99AdGuardHome restart; }; then sleep 1; else PTXT "$ERROR Couldn't start AdGuardHome!" "$ERROR Please send WebUI System Log to dev."; end_op_message 1; return; fi; }; fi; sleep 1; )& local PID="$!"; wait $PID 2>/dev/null;
-    ( { until { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
+    ( { until { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
     PTXT "$INFO AdGuardHome setup is complete."
     end_op_message 0
   elif [ ! -f "${BASE_DIR}/backup_AdGuardHome.tar.gz" ] && [ "$1" = "RESTORE" ]; then
@@ -254,7 +254,7 @@ check_dns_environment () {
   if [ "$(nvram get dhcp_dns1_x)" ] && [ "$NVCHECK" != "0" ]; then { nvram set dhcp_dns1_x=""; }; NVCHECK="$((NVCHECK+1))"; fi
   if [ "$(nvram get dhcp_dns2_x)" ] && [ "$NVCHECK" != "0" ]; then { nvram set dhcp_dns2_x=""; }; NVCHECK="$((NVCHECK+1))"; fi
   if [ "$(nvram get dhcpd_dns_router)" != "1" ] && [ "$NVCHECK" != "0" ]; then { nvram set dhcpd_dns_router="1"; }; NVCHECK="$((NVCHECK+1))"; fi
-  if [ "$NVCHECK" != "0" ]; then { nvram commit; }; { service restart_dnsmasq >/dev/null 2>&1; }; ( while { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" != "0" ]; }; do sleep 1; done; )& local PID="$!"; wait $PID 2>/dev/null; fi
+  if [ "$NVCHECK" != "0" ]; then { nvram commit; }; { service restart_dnsmasq >/dev/null 2>&1; }; ( while { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" != "0" ]; }; do sleep 1; done; )& local PID="$!"; wait $PID 2>/dev/null; fi
   PTXT "$INFO DNS Environment is Ready."
 }
 
@@ -290,7 +290,7 @@ check_dns_filter () {
       PTXT "$INFO DNS is set to redirect All DNS resolutions through to AdGuardHome."
     fi
   fi
-  if [ "$NVCHECK" != "0" ]; then { nvram commit; }; { service "restart_firewall;restart_dnsmasq" >/dev/null 2>&1; }; ( while { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" != "0" ]; }; do sleep 1; done; )& local PID="$!"; wait $PID 2>/dev/null; fi
+  if [ "$NVCHECK" != "0" ]; then { nvram commit; }; { service "restart_firewall;restart_dnsmasq" >/dev/null 2>&1; }; ( while { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" != "0" ]; }; do sleep 1; done; )& local PID="$!"; wait $PID 2>/dev/null; fi
 }
 
 check_dns_local () {
@@ -332,7 +332,7 @@ check_jffs_enabled () {
 check_version () {
   if [ -f "${TARG_DIR}/installer" ] && [ -f "$AGH_FILE" ] && [ -z "$2" ]; then
     local RMNSTALL LINSTALL MD5SUM_L MD5SUM_R NW_STATE RES_STATE
-    [ -z "$1" ] && NW_STATE="$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"
+    [ -z "$1" ] && NW_STATE="$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"
     [ -z "$1" ] && RES_STATE="$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")"
     LINSTALL="$(awk '{ print }' "${TARG_DIR}/installer" | grep -m1 "^AI_VERSION=" | grep -oE '[0-9]{1,2}([.][0-9]{1,2})([.][0-9]{1,2})')"
     RMNSTALL="$(curl -sL "${RURL}/installer" | grep -m1 "^AI_VERSION=" | grep -oE '[0-9]{1,2}([.][0-9]{1,2})([.][0-9]{1,2})')"
@@ -387,7 +387,7 @@ check_version () {
 	   "$INFO Stop by https://github.com/AdguardTeam/AdGuardHome/wiki " \
 	   "$INFO for any configuration needs. "
     elif { [ -z "$LINSTALL" ] && [ -z "$RMNSTALL" ]; } || { [ "$NW_STATE" = "0" ] && [ "$RES_STATE" != "0" ]; }; then
-      [ -z "$1" ] && { while { [ "$NW_STATE" = "0" ] && [ "$RES_STATE" != "0" ]; }; do sleep 1; NW_STATE="$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"; RES_STATE="$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")"; done; } && check_version x
+      [ -z "$1" ] && { while { [ "$NW_STATE" = "0" ] && [ "$RES_STATE" != "0" ]; }; do sleep 1; NW_STATE="$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"; RES_STATE="$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")"; done; } && check_version x
       [ -n "$1" ] && check_version x x
     fi
   fi
@@ -544,7 +544,7 @@ inst_AdGuardHome () {
       if read_yesno "Do you want create a backup before updating?"; then backup_restore BACKUP 0; else PTXT "$INFO continuing without making a backup."; fi
     fi
     local NW_STATE RES_STATE
-    NW_STATE="$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"
+    NW_STATE="$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")"
     RES_STATE="$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")"
     if [ -z "$REMOTE_VER" ] || { [ "$NW_STATE" = "0" ] && [ "$RES_STATE" != "0" ]; }; then
       PTXT "$ERROR Unable to detect the Internet!"
@@ -661,7 +661,7 @@ inst_AdGuardHome () {
   fi
   PTXT "$INFO Please wait while we perform one last check."
   ( if [ -n "$(pidof AdGuardHome)" ]; then { if { service restart_AdGuardHome >/dev/null 2>&1; }; then sleep 1; elif { /opt/etc/init.d/S99AdGuardHome restart; }; then sleep 1; else PTXT "$ERROR Couldn't start AdGuardHome!" "$ERROR Please send WebUI System Log to dev."; end_op_message 1; return; fi; }; fi; sleep 1; )& local PID="$!"; wait $PID 2>/dev/null;
-  ( { until { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
+  ( { until { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
   PTXT "$INFO AdGuardHome setup is complete."
   end_op_message 0
 }
@@ -779,7 +779,7 @@ setup_AdGuardHome () {
     if [ "$RET" -eq 0 ]; then
       PTXT "$INFO Restarting AdGuardHome with new config..."
       ( if [ -n "$(pidof AdGuardHome)" ]; then { if { service restart_AdGuardHome >/dev/null 2>&1; }; then sleep 1; elif { /opt/etc/init.d/S99AdGuardHome restart; }; then sleep 1; else PTXT "$ERROR Couldn't start AdGuardHome!" "$ERROR Please send WebUI System Log to dev."; end_op_message 1; return; fi; }; fi; sleep 1; )& local PID="$!"; wait $PID 2>/dev/null;
-      ( { until { [ "$(ping 1.1.1.1 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
+      ( { until { [ "$(ping 8.8.8.8 -c1 -W2 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(nslookup google.com 127.0.0.1 >/dev/null 2>&1; printf "%s" "$?")" = "0" ] && [ "$(pidof AdGuardHome S99AdGuardHome | wc -w)" -eq "2" ]; }; do sleep 1; done; } )& local PID="$!"; wait $PID 2>/dev/null; sleep 1; { /opt/etc/init.d/S99AdGuardHome check; };
       PTXT "$INFO AdGuardHome setup is complete."   
       end_op_message 0
     else
